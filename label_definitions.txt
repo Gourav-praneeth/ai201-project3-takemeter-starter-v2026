@@ -1,10 +1,9 @@
 # Your label definitions, one per line, as `label: definition`.
 #
-# Copy these from your README so the baseline is judged on exactly the
-# definitions you wrote. baseline.py reads this file.
-#
-# Delete the examples below and put yours in.
+# Copied from README.md so the baseline is judged on exactly the
+# definitions written there. baseline.py reads this file.
 
-analysis: makes an argument backed by a specific, checkable fact
-hot_take: a confident claim with no support offered
-reaction: an immediate response to something that just happened
+analysis: argues a point whose main claim rests on a specific, checkable detail in the post (a named game, rule, number, event, or quoted passage)
+opinion: states a view or verdict supported only by general reasoning, feeling, or the poster's own say-so, with nothing checkable that the claim depends on
+experience: narrates something that happened to the poster, or what they play or own, without arguing a verdict
+logistics: asks for, offers, or relays practical information (recommendations, listings, how-to, answers) without arguing a position

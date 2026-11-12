@@ -39,8 +39,14 @@
 
 ## What This Does
 
-<!-- Your community, and what your classifier sorts posts into. Three or four
-     sentences. -->
+TakeMeter sorts comments from r/boardgames, a public subreddit with plenty of
+text and no spoilers, by what kind of contribution they are. It has four labels:
+`analysis` (an argument that rests on a checkable detail), `opinion` (a verdict
+with only general support), `experience` (a story with no verdict) and
+`logistics` (practical questions and answers). The aim is to tell a substantial
+comment from a confident one, which a reader can't do from length or tone alone.
+The comments come from the `boardgames` subset of the Hugging Face
+`REDDIT_comments` dataset.
 
 
 
@@ -54,35 +60,67 @@
      The decision rule is worth a point on its own and it's the thing most
      people leave out. Every taxonomy has a hardest boundary. Name yours. -->
 
-### `label_one`
+### `analysis`
 
-**Definition:**
-
-**Example 1:**
->
-
-**Example 2:**
->
-
-### `label_two`
-
-**Definition:**
+**Definition:** Argues a point whose main claim rests on a specific, checkable detail in the post (a named game, rule, number, event, or quoted passage).
 
 **Example 1:**
->
+> There are a lot of problems with this article. First, and most glaring: the author seems unaware that this isn't the first game in the Vast series. Vast: The Crystal Caverns came out two years ago. [...] What criteria are you using to define which games are like this one? [...] Where did you find data saying that many of these games are shunned by gamers for lacking variety?
 
 **Example 2:**
->
+> I wouldn't call it the *Kickstarter* period - better to talk about *crowdfunding*. I prefer *GMT*'s P500 - where the publisher still bears the brunt of the risk and the consumer can even retract their order before it ships out (i.e. they're not even charged until the last minute).
+
+### `opinion`
+
+**Definition:** States a view or verdict supported only by general reasoning, feeling, or the poster's own say-so, with nothing checkable that the claim depends on.
+
+**Example 1:**
+> I dunno who these people are that know their exact IQ and compare it with others...what a specifically odd way to try and feel good about yourself. An IQ is such a tiny insignificant part of a whole person - much healthier to work on improving social skills, coping and mental health wellness.  Focusing on a high IQ score may eventually leave you a lonely, albeit smart, person.
+
+**Example 2:**
+> This is a bit much. I don't really disagree with the first comment. And I also don't think the "you must be fun at parties" comment is mature. But, this is really over the top. No one is "sick" for being personally upset about a life situation that doesn't directly involve fearing for their lives. [...]
+
+### `experience`
+
+**Definition:** Narrates something that happened to the poster, or what they play or own, without arguing a verdict.
+
+**Example 1:**
+> I was always a boardgame player throughout my life. My friends and I played **Axis and Allies** in college a lot but as an adult my first purchase was either **Dominion** or **Ticket to Ride** I can't remember which but I've been hooked on modern games ever since.
+
+**Example 2:**
+> My earliest gaming memory is playing scrabble with my family when I was 7 or so. My mom would always get annoyed at my dad for pulling super obscure words from his head [...] Now, playing with him as an adult, I finally feel for her.
+
+### `logistics`
+
+**Definition:** Asks for, offers, or relays practical information (recommendations, listings, how-to, answers) without arguing a position.
+
+**Example 1:**
+> If you aren't in a rush, the Bring n Buy Auction at Breakout will probably be your best bet
+
+**Example 2:**
+> **FS/FT:** Most of these are like new or played once and in great shape. Located in **Atlanta** [...] **Dogs of War (unopened, in shrink)** [...] **Sheriff of Nottingham** [...] **Want:** **Trade on the Tigris** **Paypal/cash**
 
 ### The hardest boundary
 
-**Which two labels:**
+**Which two labels:** `analysis` and `opinion`
 
-**The decision rule I used every time:**
-<!-- e.g. "If the post names a specific checkable fact, it's `analysis`, even
-     if the tone is heated." -->
+**The post that sits between them:**
+> I think the theme and design is timeless. Portugal will always be known for those tiles and as the world marches on to become more and more modern and uniform, cultural heritage like that will become even more powerful. The actual game design is also timeless - people will always love to look at glossy cubes, touch them, hear the clack-clack. [...] The game has zero setup time, so it will always be quick on the table and therefore super suitable for mainstream masses. [...] And most importantly, the game is really hard to master.
 
+It names concrete things (Portuguese tiles, zero setup time, the factories) and is
+long, but its conclusion is "timeless", a judgement.
 
+**The decision rule I used every time:** Find the post's main claim, then imagine
+the checkable details in it are false. If the poster would have to withdraw or
+change the claim, it's `analysis`. If they could shrug and keep it, it's `opinion`,
+however long the post is or however many concrete features it lists. For the post above
+(a comment about Azul), "timeless" survives even if the tiles and setup details were wrong, so
+it's `opinion`. In the Vast post, "the author seems unaware of the earlier game"
+collapses if the earlier game didn't exist, so it's `analysis`.
+
+When a post fits two labels in general, label by what it is *for*: a verdict is
+`opinion`, a question or pointer is `logistics`, and narration with no verdict is
+`experience`.
 
 ---
 
