@@ -6,4 +6,4 @@
 analysis: argues a point whose main claim rests on a specific, checkable detail in the post (a named game, rule, number, event, or quoted passage)
 opinion: states a view or verdict supported only by general reasoning, feeling, or the poster's own say-so, with nothing checkable that the claim depends on
 experience: narrates something that happened to the poster, or what they play or own, without arguing a verdict
-logistics: asks for, offers, or relays practical information (recommendations, listings, how-to, answers) without arguing a position
+logistics: asks for, offers, or relays practical information (questions, recommendations, listings, how-to, answers), or is pure social glue (thanks, agreement, small talk), without arguing a position

@@ -92,7 +92,7 @@ The comments come from the `boardgames` subset of the Hugging Face
 
 ### `logistics`
 
-**Definition:** Asks for, offers, or relays practical information (recommendations, listings, how-to, answers) without arguing a position.
+**Definition:** Asks for, offers, or relays practical information (questions, recommendations, listings, how-to, answers), or is pure social glue (thanks, agreement, small talk), without arguing a position.
 
 **Example 1:**
 > If you aren't in a rush, the Bring n Buy Auction at Breakout will probably be your best bet
@@ -126,48 +126,74 @@ When a post fits two labels in general, label by what it is *for*: a verdict is
 
 ## The Dataset
 
-<!-- Where you collected from, how you labelled, your counts, and three hard
-     cases. -->
+**Where the posts came from:** 335 comments from r/boardgames, taken from the
+`boardgames` subset of the Hugging Face dataset
+[HuggingFaceGECLM/REDDIT_comments](https://huggingface.co/datasets/HuggingFaceGECLM/REDDIT_comments)
+(one parquet shard, public subreddit, collected in 2017 to 2018). Reddit and
+BoardGameGeek blocked direct collection, so I used the dataset instead. These are
+comments, not top-level posts. Three batches went into `labels.csv`:
 
-**Where the posts came from:**
+1. **Rows 1 to 200:** a random pool, 50 comments from each of four length bands
+   (12 to 25, 26 to 60, 61 to 120, 121 to 250 words). I dropped deleted and removed
+   comments, bots, links, and anything under 12 or over 250 words.
+2. **Rows 201 to 275:** 75 comments from the same shard, chosen by a keyword filter
+   (quotes, numbers, "because", "rulebook", "edition") because the first 200 held
+   only about 15 `analysis` comments.
+3. **Rows 276 to 335:** 60 more from the same shard with a stricter filter
+   (a quote or number plus a rule or expansion word), for the same reason.
 
-**How I labelled them:** <!-- Cold first? Pre-labelled with AI and corrected?
-Say so plainly — the disclosure is required, not penalised. -->
+Batches 2 and 3 were pulled to find more `analysis`. Both used a filter and not a
+random draw, so the file over-represents comments that cite rules, numbers and
+quotes, and the label shares below are not the community's natural mix. The source
+permalink for every row is in `data/labels_source.csv`, in the same order.
+
+**How I labelled them:** Claude (an AI tool) read all 335 comments and labelled
+every row from my written definitions and decision rule. Every row's `note` says
+`ai-prelabel`. **I have not yet read and corrected them.** I did not label any
+comments cold. The `note` on 20 randomly chosen rows says
+`ai-prelabel, cold slot: relabel unaided`, and `data/cold_20_blank.csv` lists
+those 20 with no label. I will label them unaided before looking at the AI
+labels, then set `note` to `cold` on those rows and use them for the agreement
+report. Reading the AI labels did lead me to widen `logistics` to cover social
+glue (thanks, agreement, bare questions), since many replies fit none of the four
+definitions.
 
 **Counts per label:**
 
 | Label | Count | Share |
 |---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
-| **Total** |  | 100% |
+| `opinion` | 122 | 36.4% |
+| `logistics` | 117 | 34.9% |
+| `experience` | 65 | 19.4% |
+| `analysis` | 31 | 9.3% |
+| **Total** | 335 | 100% |
+
+No label is above 70%. `analysis` is the thin one. It is about 9% of the random
+batch too, so I think it is genuinely rare in this community and I could only get
+to 31 with the filtered batches.
 
 **Three hard cases**
 
-<!-- Any post that made you pause: what it was, which two labels it could have
-     been, and what you chose. These are worth more than the easy 190. -->
-
 **1.**
-> *The post:*
+> *The post:* "Generally, with how low the designer's profit margins are on board games combined with the amount of work that goes into design and distribution, the profit per hour that goes to the designer is typically less than minimum wage for all but the most successful games.  It's a cutthroat market full of passion projects, games are priced to break even rather than make a profit."
 >
-> *Could have been:*
+> *Could have been:* `analysis` or `opinion`
 >
-> *I chose, because:*
+> *I chose, because:* `opinion`. It sounds like an argument about economics, but it gives no figure, source or named example. The claim "less than minimum wage" would stand unchanged if I swapped in any numbers, so it fails the delete-the-detail test.
 
 **2.**
-> *The post:*
+> *The post:* "Been out of print for about 1-2 years now.   This was probably the clue that AEG decline renewing licenses for variois Love Letters as they probably planned to sell the Love Letter license to someone else. I dont see Zman as the company to get franchise products, especially after the mystery from Star Wars Carcassonme never getting an official US release."
 >
-> *Could have been:*
+> *Could have been:* `analysis` or `opinion`
 >
-> *I chose, because:*
+> *I chose, because:* `analysis`, but only just. It names checkable facts (out of print for 1 to 2 years, AEG and Z-Man, the Star Wars Carcassonne release) and the inference leans on them. But "probably" shows it is speculation. I kept the label because if the out-of-print date were wrong the inference would have to go.
 
 **3.**
-> *The post:*
+> *The post:* "The Grimm Forest has been my most annoying game of 2018. The fact that everyone can see what you are doing and what you are after means that making a meaningful decision more often than not goes bad for you. The first play I did was going horribly bad, then I just gave up and started selecting my locations randomly. [...] The second play I did I played this way from the start, and won before anyone else had their second building complete."
 >
-> *Could have been:*
+> *Could have been:* `experience` or `opinion`
 >
-> *I chose, because:*
+> *I chose, because:* `experience`. Most of the comment narrates two plays and what happened. But it opens with a verdict ("most annoying game"), which under my tie-break would make it `opinion`. I went with the narration because it is most of the text. This is the kind of row I expect to disagree with myself on when I relabel.
 
 ---
 
