@@ -199,19 +199,22 @@ to 31 with the filtered batches.
 
 ## The Training Run
 
-<!-- Your starting model, your settings, and anything you changed and why. -->
+**Base model:** `distilbert-base-uncased`, fine-tuned for four-way classification on `labels.csv` (335 rows).
 
-**Base model:**
+**Settings:** 3 epochs, learning rate 2e-5, batch size 16, 128 tokens per comment, seed 42. Trained on an Apple Silicon GPU (`mps`), PyTorch 2.8.0, about 1 to 2 minutes. These are also recorded in `results.json`.
 
-**Settings:** <!-- epochs, learning rate, batch size, seed -->
+**Anything I changed from the defaults, and why:** No training settings. The only edits to the notebook were `LABELS` (to `analysis`, `opinion`, `experience`, `logistics`), `NAME`, and `EMAIL`. I left the email as `not-provided` because `results.json` is pushed to a public repo. The dataset check printed "Data looks fine", with no problems and no warnings.
 
-**Anything I changed from the defaults, and why:**
+**Split sizes:** 233 train / 51 validation / 51 test, stratified.
 
-**Split sizes:** <!-- train / val / test, and per-label counts in the test
-split. If a label had fewer than about 8 in test, say so — it explains a lot
-of next unit's variance. -->
+| Label | Train | Val | Test |
+|---|---|---|---|
+| `analysis` | 22 | 4 | 5 |
+| `opinion` | 85 | 19 | 18 |
+| `experience` | 45 | 10 | 10 |
+| `logistics` | 81 | 18 | 18 |
 
-
+`analysis` has only 5 examples in the test split, under the notebook's threshold of 8, so its F1 will move a lot between seeds. That is expected to show up in unit 6. `experience` has 10, which is also thin. `results.json` and `test_split.csv` are committed from this run. I haven't read the numbers closely, since the criteria in `criteria.md` were filed before the run.
 
 ---
 
@@ -224,19 +227,19 @@ of next unit's variance. -->
      workflow and disclosing it costs you nothing. Not disclosing it is the
      problem. -->
 
-**Moment 1**
+**Moment 1: getting the data when scraping was blocked**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I asked Claude to fetch posts from a public community. I was leaning toward board games or anime and had not collected anything yet.
+- *What came back:* Reddit (the `.json` pages and old.reddit.com) and BoardGameGeek (403) both refused automated fetches. When I asked about Kaggle and Hugging Face, Claude searched and found the `boardgames` subset of `HuggingFaceGECLM/REDDIT_comments`. It downloaded one shard of about 900k comments and sampled from it.
+- *What I changed:* I picked the subreddit (r/boardgames) and told Claude to use that dataset. The sample is stratified by comment length so one-liners don't dominate. The result is comments, not top-level posts, and they are from 2017 to 2018, which the README's Dataset section says.
 
-**Moment 2**
+**Moment 2: labelling the data turned up two problems with my taxonomy**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I gave Claude my four definitions and the `analysis` vs `opinion` decision rule and asked it to read and label the comments, after it had also read the first 40 for my reading notes.
+- *What came back:* Two problems. About a third of replies were social glue ("Agreed!", "Thanks, that's good to hear", a bare question) that fit none of the four definitions. Also, only about 15 of the first 200 comments were `analysis`, against my own 30-per-label floor.
+- *What I changed:* I widened `logistics` to cover social glue, in `README.md` and `label_definitions.txt`. For `analysis` I allowed filtered extra batches of 75 and 60 comments (quotes, numbers, rule words), which brought it to 31 but made the data less representative. The README says so.
 
-**Pre-labelling disclosure:**
+**Pre-labelling disclosure:** Claude, an AI tool, did most of the work behind this project at my request. It read the 40 comments for my reading notes, wrote the label definitions, decision rule and stress-test posts, drafted `criteria.md`, and **pre-labelled all 335 comments in `labels.csv`**. Every row's `note` column says `ai-prelabel`. The stress test (`stress_test.md`) was written and scored by Claude, not by me, so it only checks for holes in the definitions. **I have not yet read and corrected the AI labels, and I have not labelled the 20 cold comments** (`data/cold_20_blank.csv`). Until I do, the labels are the AI's judgement, not mine, and the metrics measure how well the model learns that. Update this paragraph when I have reviewed them.
 
 <!-- ═══════════════════════ UNIT 6 — THE TEST ═══════════════════════
 
